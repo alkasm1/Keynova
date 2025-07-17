@@ -50,7 +50,7 @@
       margin-top: 8px;
     }
 
-    #unlockBox4 {
+    .unlockBox {
       display: none;
       margin-top: 15px;
       padding: 10px;
@@ -60,7 +60,7 @@
       width: 280px;
     }
 
-    #keyResult4 {
+    .keyResult {
       margin-top: 10px;
       font-size: 0.95rem;
     }
@@ -70,37 +70,49 @@
 
   <h1>Keynova Challenge</h1>
 
+  <!-- 🔐 المفتاح الأول -->
   <div class="key">
     <p>🧩 الحماية الرقمية ليست ما تعرفه...<br /> إنها تخفي شيئًا لم تره من قبل.</p>
-    <a href="assets/key1.pdf" target="_blank" class="btn">Access Encrypted Page 1</a>
-    <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
+    <button class="btn" onclick="showUnlockBox('1')">🔓 قم بتحميل المفتاح</button>
+
+    <div id="unlockBox1" class="unlockBox">
+      <p>يتطلب إدخال المفتاح الخاص بالوصول:</p>
+      <input type="file" accept="image/*" id="keyImage1" onchange="checkKey1()">
+      <div id="keyResult1" class="keyResult"></div>
+    </div>
+
+    <p class="note">🔐 هذا الملف لا يُفتح إلا عند توفر المفتاح المناسب.</p>
   </div>
 
+  <!-- 🔐 المفتاح الثاني -->
   <div class="key">
     <p>🧩 ليس كل ملف مغلق بحاجة إلى رقم سري...<br /> البعض يفتح فقط إذا كنت في المكان الصحيح، في الوقت الصحيح.</p>
     <a href="assets/key2.pdf" target="_blank" class="btn">Access Encrypted Page 2</a>
     <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
   </div>
 
+  <!-- 🔐 المفتاح الثالث -->
   <div class="key">
     <p>🧩 الاختراق ليس سهولة الوصول،<br /> بل خطأ في فهم ما تم بناؤه بشكل غير مألوف.</p>
     <a href="assets/key3.pdf" target="_blank" class="btn">Access Encrypted Page 3</a>
     <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
   </div>
 
+  <!-- 🔐 المفتاح الرابع -->
   <div class="key">
     <p>🧩 إن كنت تظن أنك قريب من الفتح... فربما ما زلت بعيدًا.<br /> لأن Keynova لا تلعب مع المفاتيح، بل تصنعها.</p>
-    <button class="btn" onclick="showUnlockBox4()">🔓 قم بتحميل المفتاح</button>
+    <button class="btn" onclick="showUnlockBox('4')">🔓 قم بتحميل المفتاح</button>
 
-    <div id="unlockBox4">
+    <div id="unlockBox4" class="unlockBox">
       <p>يتطلب إدخال المفتاح الخاص بالوصول:</p>
       <input type="file" accept="image/*" id="keyImage4" onchange="checkKey4()">
-      <div id="keyResult4"></div>
+      <div id="keyResult4" class="keyResult"></div>
     </div>
 
     <p class="note">🔐 هذا الملف لا يُفتح إلا عند توفر المفتاح المناسب.</p>
   </div>
 
+  <!-- 🏆 النهائي -->
   <div class="key">
     <p>🏆 🎉 أنت الفائز بهذه الثورة الجديدة في عالم التشفير<br /> مع Keynova</p>
     <a href="assets/key5.pdf" target="_blank" class="btn">Access Encrypted Final Page</a>
@@ -108,8 +120,20 @@
   </div>
 
   <script>
-    function showUnlockBox4() {
-      document.getElementById('unlockBox4').style.display = 'block';
+    function showUnlockBox(id) {
+      document.getElementById(`unlockBox${id}`).style.display = 'block';
+    }
+
+    function checkKey1() {
+      const file = document.getElementById('keyImage1').files[0];
+      if (!file) return;
+
+      const resultBox = document.getElementById('keyResult1');
+      if (file.name === "unlock.part01.png") {
+        resultBox.innerHTML = `<a href="assets/key1.pdf" target="_blank" style="color:lime;">📄 تم فتح الملف الأول بنجاح</a>`;
+      } else {
+        resultBox.innerHTML = `<span style="color:red;">🚫 المفتاح غير صالح.</span>`;
+      }
     }
 
     function checkKey4() {
