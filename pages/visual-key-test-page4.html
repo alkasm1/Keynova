@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+  <meta charset="UTF-8">
+  <title>Keynova — اختبار المفتاح الرابع</title>
+  <style>
+    body {
+      background: #0f0f0f;
+      color: #fff;
+      font-family: 'Inter', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px;
+      text-align: center;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+
+    input {
+      margin-top: 20px;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    #result {
+      margin-top: 25px;
+      font-size: 1.1rem;
+      padding: 10px;
+      border-radius: 8px;
+    }
+
+    .success {
+      background: #0f4;
+      color: #000;
+    }
+
+    .error {
+      background: #f33;
+      color: #fff;
+    }
+
+    a.btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #ff6a00;
+      color: #fff;
+      border-radius: 8px;
+      text-decoration: none;
+    }
+
+    a.btn:hover {
+      background: #ff8000;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔐 اختبار المفتاح البصري الرابع</h1>
+  <p>اختر صورة المفتاح المجزّأ للتحقق من صحتها بناءً على محتواها.</p>
+  <input type="file" accept="image/*" onchange="handleUpload(event)">
+  <canvas id="canvas" width="256" height="256" style="display:none;"></canvas>
+  <div id="result"></div>
+
+  <script>
+    function verifyKeyForPage4(imageElement) {
+      const canvas = document.getElementById('canvas');
+      const ctx = canvas.getContext('2d');
+
+      canvas.width = imageElement.width;
+      canvas.height = imageElement.height;
+      ctx.drawImage(imageElement, 0, 0);
+
+      const width = imageElement.width;
+      const height = imageElement.height;
+
+      const cornerPixel = ctx.getImageData(5, 5, 1, 1).data;
+      const color = {
+        r: cornerPixel[0],
+        g: cornerPixel[1],
+        b: cornerPixel[2]
+      };
+
+      const matchDimensions = width === 256 && height === 256;
+      const matchColor =
+        Math.abs(color.r - 0) < 15 &&
+        Math.abs(color.g - 116) < 15 &&
+        Math.abs(color.b - 255) < 15;
+
+      return matchDimensions && matchColor;
+    }
+
+    function handleUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const isValid = verifyKeyForPage4(img);
+        const resultBox = document.getElementById('result');
+
+        if (isValid) {
+          resultBox.className = 'success';
+          resultBox.innerHTML = '✅ المفتاح صحيح — تم التحقق بنجاح!<br>' +
+            '<a href="../assets/key4.pdf" target="_blank" class="btn">فتح الملف الرابع</a>';
+        } else {
+          resultBox.className = 'error';
+          resultBox.textContent = '❌ المفتاح غير مطابق. تأكد من استخدام جزء صحيح من الصورة الأم.';
+        }
+      };
+    }
+    window.handleUpload = handleUpload;
+  </script>
+</body>
+</html>
