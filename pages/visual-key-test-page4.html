@@ -60,37 +60,47 @@
 </head>
 <body>
   <h1>🔐 اختبار المفتاح البصري الرابع</h1>
-  <p>اختر صورة المفتاح المجزّأ للتحقق من صحتها بناءً على محتواها.</p>
+  <p>اختر صورة المفتاح المجزّأ للتحقق من صحتها بناءً على تطابقها مع الصورة الأم.</p>
   <input type="file" accept="image/*" onchange="handleUpload(event)">
-  <canvas id="canvas" width="256" height="256" style="display:none;"></canvas>
+  <canvas id="canvas" style="display:none;"></canvas>
   <div id="result"></div>
 
   <script>
-    function verifyKeyForPage4(imageElement) {
-      const canvas = document.getElementById('canvas');
-      const ctx = canvas.getContext('2d');
+    async function verifyKeyWithMaster(keyImgElement) {
+      return new Promise((resolve) => {
+        const masterImg = new Image();
+        masterImg.src = "../assets/keynova-master.png";
 
-      canvas.width = imageElement.width;
-      canvas.height = imageElement.height;
-      ctx.drawImage(imageElement, 0, 0);
+        masterImg.onload = () => {
+          const canvas = document.getElementById("canvas");
+          const ctx = canvas.getContext("2d");
 
-      const width = imageElement.width;
-      const height = imageElement.height;
+          // رسم الصورة الأم
+          canvas.width = masterImg.width;
+          canvas.height = masterImg.height;
+          ctx.drawImage(masterImg, 0, 0);
 
-      const cornerPixel = ctx.getImageData(5, 5, 1, 1).data;
-      const color = {
-        r: cornerPixel[0],
-        g: cornerPixel[1],
-        b: cornerPixel[2]
-      };
+          // استخراج جزء من الصورة الأم بنفس حجم المفتاح (مثلاً من x=128, y=128)
+          const masterData = ctx.getImageData(128, 128, keyImgElement.width, keyImgElement.height).data;
 
-      const matchDimensions = width === 256 && height === 256;
-      const matchColor =
-        Math.abs(color.r - 0) < 15 &&
-        Math.abs(color.g - 116) < 15 &&
-        Math.abs(color.b - 255) < 15;
+          // رسم المفتاح المجزّأ
+          canvas.width = keyImgElement.width;
+          canvas.height = keyImgElement.height;
+          ctx.drawImage(keyImgElement, 0, 0);
+          const keyData = ctx.getImageData(0, 0, keyImgElement.width, keyImgElement.height).data;
 
-      return matchDimensions && matchColor;
+          // مقارنة البيكسلات
+          let match = true;
+          for (let i = 0; i < keyData.length; i++) {
+            if (Math.abs(keyData[i] - masterData[i]) > 10) {
+              match = false;
+              break;
+            }
+          }
+
+          resolve(match);
+        };
+      });
     }
 
     function handleUpload(event) {
@@ -99,8 +109,8 @@
 
       const img = new Image();
       img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        const isValid = verifyKeyForPage4(img);
+      img.onload = async () => {
+        const isValid = await verifyKeyWithMaster(img);
         const resultBox = document.getElementById('result');
 
         if (isValid) {
@@ -109,10 +119,11 @@
             '<a href="../assets/key4.pdf" target="_blank" class="btn">فتح الملف الرابع</a>';
         } else {
           resultBox.className = 'error';
-          resultBox.textContent = '❌ المفتاح غير مطابق. تأكد من استخدام جزء صحيح من الصورة الأم.';
+          resultBox.textContent = '❌ المفتاح غير مطابق هندسيًا. تأكد من استخدام جزء فعلي من الصورة الأم.';
         }
       };
     }
+
     window.handleUpload = handleUpload;
   </script>
 </body>
