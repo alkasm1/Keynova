@@ -1,74 +1,88 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>تحدي Keynova</title>
+  <title>Keynova — Challenge</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body {
-      background: #000;
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background-color: #0f0f0f;
       color: #fff;
-      font-family: 'Segoe UI', sans-serif;
-      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 40px 20px;
       text-align: center;
     }
+
     h1 {
       font-size: 2.5rem;
-      margin-bottom: 10px;
+      margin-bottom: 2rem;
     }
+
     .key {
-      background: #111;
-      border: 1px solid #444;
-      padding: 15px;
-      margin: 10px auto;
-      width: 80%;
-      display: none;
-      transition: all 0.5s ease;
+      margin-bottom: 40px;
     }
-    button {
-      background: #fff;
-      color: #000;
-      padding: 10px 25px;
-      border: none;
-      cursor: pointer;
-      margin: 10px;
-      font-weight: bold;
-    }
-    button:hover {
+
+    .btn {
       background: #ff6a00;
       color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.3s ease;
+      margin-top: 10px;
+    }
+
+    .btn:hover {
+      background: #ff8000;
+    }
+
+    .note {
+      font-size: 0.9rem;
+      color: #aaa;
+      margin-top: 8px;
     }
   </style>
-  <script>
-    function showKey(id) {
-      document.getElementById(id).style.display = 'block';
-    }
-  </script>
 </head>
 <body>
 
-  <h1>تحدي Keynova</h1>
-  <p>أمامك خمس مفاتيح. هل تستطيع فتحها؟</p>
+  <h1>Keynova Challenge</h1>
 
-  <button onclick="showKey('key1')">فتح المفتاح الأول</button>
-  <button onclick="showKey('key2')">فتح المفتاح الثاني</button>
-  <button onclick="showKey('key3')">فتح المفتاح الثالث</button>
-  <button onclick="showKey('key4')">فتح المفتاح الرابع</button>
-  <button onclick="showKey('key5')">فتح المفتاح الخامس</button>
+  <div class="key">
+    <p>🧩 الحماية الرقمية ليست ما تعرفه...<br /> إنها تخفي شيئًا لم تره من قبل.</p>
+    <a href="assets/key1.pdf" target="_blank" class="btn">Access Encrypted Page 1</a>
+    <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
+  </div>
 
-  <div id="key1" class="key">
-    🧩 "الحماية الرقمية ليست ما تعرفه... إنها تخفي شيئًا لم تره من قبل."
+  <div class="key">
+    <p>🧩 ليس كل ملف مغلق بحاجة إلى رقم سري...<br /> البعض يفتح فقط إذا كنت في المكان الصحيح، في الوقت الصحيح.</p>
+    <a href="assets/key2.pdf" target="_blank" class="btn">Access Encrypted Page 2</a>
+    <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
   </div>
-  <div id="key2" class="key">
-    🧩 "ليس كل ملف مغلق بحاجة إلى رقم سري... البعض يفتح فقط إذا كنت في المكان الصحيح، في الوقت الصحيح."
+
+  <div class="key">
+    <p>🧩 الاختراق ليس سهولة الوصول،<br /> بل خطأ في فهم ما تم بناؤه بشكل غير مألوف.</p>
+    <a href="assets/key3.pdf" target="_blank" class="btn">Access Encrypted Page 3</a>
+    <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
   </div>
-  <div id="key3" class="key">
-    🧩 "الاختراق ليس سهولة الوصول، بل خطأ في فهم ما تم بناؤه بشكل غير مألوف."
+
+  <div class="key">
+    <p>🧩 إن كنت تظن أنك قريب من الفتح... فربما ما زلت بعيدًا.<br /> لأن Keynova لا تلعب مع المفاتيح، بل تصنعها.</p>
+    <a href="assets/key4.pdf" target="_blank" class="btn">Access Encrypted Page 4</a>
+    <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
   </div>
-  <div id="key4" class="key">
-    🧩 "إن كنت تظن أنك قريب من الفتح... فربما ما زلت بعيدًا. لأن Keynova لا تلعب مع المفاتيح، بل تصنعها."
-  </div>
-  <div id="key5" class="key">
-    🏆 "🎉 أنت الفائز بهذه الثورة الجديدة في عالم التشفير مع Keynova"
+
+  <div class="key">
+    <p>🏆 🎉 أنت الفائز بهذه الثورة الجديدة في عالم التشفير<br /> مع Keynova</p>
+    <a href="assets/key5.pdf" target="_blank" class="btn">Access Encrypted Final Page</a>
+    <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
   </div>
 
 </body>
