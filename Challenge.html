@@ -50,7 +50,7 @@
       margin-top: 8px;
     }
 
-    #unlockBox {
+    #unlockBox4 {
       display: none;
       margin-top: 15px;
       padding: 10px;
@@ -60,7 +60,7 @@
       width: 280px;
     }
 
-    #keyResult {
+    #keyResult4 {
       margin-top: 10px;
       font-size: 0.95rem;
     }
@@ -72,15 +72,8 @@
 
   <div class="key">
     <p>🧩 الحماية الرقمية ليست ما تعرفه...<br /> إنها تخفي شيئًا لم تره من قبل.</p>
-    <button class="btn" onclick="showUnlockBox()">🧩 قم بتحميل المفتاح</button>
-
-    <div id="unlockBox">
-      <p>يتطلب إدخال المفتاح الخاص بالوصول:</p>
-      <input type="file" accept="image/*" id="keyImage" onchange="checkKey()">
-      <div id="keyResult"></div>
-    </div>
-    
-    <p class="note">🔐 هذا الملف لا يُفتح إلا عند توفر المفتاح المناسب.</p>
+    <a href="assets/key1.pdf" target="_blank" class="btn">Access Encrypted Page 1</a>
+    <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
   </div>
 
   <div class="key">
@@ -97,8 +90,15 @@
 
   <div class="key">
     <p>🧩 إن كنت تظن أنك قريب من الفتح... فربما ما زلت بعيدًا.<br /> لأن Keynova لا تلعب مع المفاتيح، بل تصنعها.</p>
-    <a href="assets/key4.pdf" target="_blank" class="btn">Access Encrypted Page 4</a>
-    <p class="note">🔐 This file is password-protected. Use your Keynova key to unlock it.</p>
+    <button class="btn" onclick="showUnlockBox4()">🔓 قم بتحميل المفتاح</button>
+
+    <div id="unlockBox4">
+      <p>يتطلب إدخال المفتاح الخاص بالوصول:</p>
+      <input type="file" accept="image/*" id="keyImage4" onchange="checkKey4()">
+      <div id="keyResult4"></div>
+    </div>
+
+    <p class="note">🔐 هذا الملف لا يُفتح إلا عند توفر المفتاح المناسب.</p>
   </div>
 
   <div class="key">
@@ -108,19 +108,41 @@
   </div>
 
   <script>
-    function showUnlockBox() {
-      document.getElementById('unlockBox').style.display = 'block';
+    function showUnlockBox4() {
+      document.getElementById('unlockBox4').style.display = 'block';
     }
 
-    function checkKey() {
-      const uploadedFile = document.getElementById('keyImage').files[0];
-      if (uploadedFile && uploadedFile.name === "unlock.part01.png") {
-        document.getElementById('keyResult').innerHTML =
-          `<a href="assets/key1.pdf" target="_blank" style="color:lime;">📄 تم فتح الملف الأول بنجاح</a>`;
-      } else {
-        document.getElementById('keyResult').innerHTML =
-          `<span style="color:red;">🚫 المفتاح غير صالح أو غير مألوف.</span>`;
-      }
+    function checkKey4() {
+      const file = document.getElementById('keyImage4').files[0];
+      if (!file) return;
+
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+
+        const width = img.width;
+        const height = img.height;
+        const pixel = ctx.getImageData(5, 5, 1, 1).data;
+        const color = { r: pixel[0], g: pixel[1], b: pixel[2] };
+
+        const matchDimensions = width === 256 && height === 256;
+        const matchColor =
+          Math.abs(color.r - 0) < 15 &&
+          Math.abs(color.g - 116) < 15 &&
+          Math.abs(color.b - 255) < 15;
+
+        const resultBox = document.getElementById('keyResult4');
+        if (matchDimensions && matchColor) {
+          resultBox.innerHTML = `<a href="assets/key4.pdf" target="_blank" style="color:lime;">📄 تم فتح الملف الرابع بنجاح</a>`;
+        } else {
+          resultBox.innerHTML = `<span style="color:red;">🚫 المفتاح غير صالح أو غير مألوف.</span>`;
+        }
+      };
     }
   </script>
 
