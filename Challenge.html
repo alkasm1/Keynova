@@ -136,37 +136,29 @@
       }
     }
 
-    function checkKey4() {
+    async function checkKey4() {
       const file = document.getElementById('keyImage4').files[0];
       if (!file) return;
 
-      const img = new Image();
-      img.src = URL.createObjectURL(file);
-      img.onload = () => {
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = img.width;
-        canvas.height = img.height;
-        ctx.drawImage(img, 0, 0);
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const buffer = new Uint8Array(e.target.result);
+        crypto.subtle.digest("SHA-256", buffer).then((hash) => {
+          const hex = Array.from(new Uint8Array(hash))
+            .map(b => b.toString(16).padStart(2, "0"))
+            .join("");
 
-        const width = img.width;
-        const height = img.height;
-        const pixel = ctx.getImageData(5, 5, 1, 1).data;
-        const color = { r: pixel[0], g: pixel[1], b: pixel[2] };
+          const resultBox = document.getElementById('keyResult4');
+          const masterHash = "2cb6792233fe38d66196100874c837fb6beb022d7bd749cb50bd4363f01b0d47";
 
-        const matchDimensions = width === 256 && height === 256;
-        const matchColor =
-          Math.abs(color.r - 0) < 15 &&
-          Math.abs(color.g - 116) < 15 &&
-          Math.abs(color.b - 255) < 15;
-
-        const resultBox = document.getElementById('keyResult4');
-        if (matchDimensions && matchColor) {
-          resultBox.innerHTML = `<a href="assets/key4.pdf" target="_blank" style="color:lime;">📄 تم فتح الملف الرابع بنجاح</a>`;
-        } else {
-          resultBox.innerHTML = `<span style="color:red;">🚫 المفتاح غير صالح أو غير مألوف.</span>`;
-        }
+          if (hex === masterHash) {
+            resultBox.innerHTML = `<a href="assets/key4.pdf" target="_blank" style="color:lime;">📄 تم فتح الملف الرابع بنجاح</a>`;
+          } else {
+            resultBox.innerHTML = `<span style="color:red;">🚫 المفتاح غير صالح.</span><br>Hash المرفوع: ${hex}`;
+          }
+        });
       };
+      reader.readAsArrayBuffer(file);
     }
   </script>
 
