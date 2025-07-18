@@ -77,9 +77,9 @@
 
   <!-- نافذة إدخال كلمة مرور للمفتاح الثاني -->
   <div class="key">
-    <p>🧩 المفتاح الثاني يتطلب إدخال كلمة مرور.</p>
-    <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" />
-    <button class="btn" onclick="checkPassword()">تحقق من المفتاح</button>
+    <p>🧩 إدخال كلمة المرور:</p>
+    <input type="password" id="passwordInput" placeholder="كلمة المرور" />
+    <button class="btn" onclick="checkPassword()">تحقق</button>
     <div id="passwordResult" class="keyResult"></div>
   </div>
 
@@ -94,7 +94,7 @@
     const key1Name = "unlock.part01.png";
     const key3Hash = "b7a295f72c7de817b37d9f27700527f7688eec720001cf2750b5b072ce656775";
     const key4Hash = "2cb6792233fe38d66196100874c837fb6beb022d7bd749cb50bd4363f01b0d47";
-    const correctPassword = "your-secret-key"; // ← ضع هنا كلمة مرور المفتاح الثاني
+    const correctPassword = "nova2";
 
     async function getImageHash(file) {
       return new Promise((resolve) => {
@@ -135,7 +135,7 @@
       } else {
         resultBox.className = "error";
         resultBox.innerHTML = `🚫 المفتاح غير صالح.<br>
-          <a href="assets/key5.pdf" target="_blank" class="btn">طلب مفاتيح Keynova</a>`;
+          <a href="assets/key5.pdf" target="_blank" class="btn">فتح الملف الخامس</a>`;
       }
     }
 
@@ -150,7 +150,7 @@
       } else {
         resultBox.className = "error";
         resultBox.innerHTML = `🚫 كلمة المرور غير صحيحة.<br>
-          <a href="assets/key5.pdf" target="_blank" class="btn">طلب مفاتيح Keynova</a>`;
+          <a href="assets/key5.pdf" target="_blank" class="btn">فتح الملف الخامس</a>`;
       }
     }
   </script>
