@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>Keynova — اختبار التطابق المرن</title>
+  <title>Keynova — تشخيص المفتاح الكامل</title>
   <style>
     body {
       background: #0f0f0f;
@@ -31,7 +31,7 @@
       font-size: 1rem;
       padding: 10px;
       border-radius: 8px;
-      max-width: 600px;
+      max-width: 700px;
       text-align: left;
     }
 
@@ -61,8 +61,8 @@
   </style>
 </head>
 <body>
-  <h1>🔍 اختبار التطابق المرن مع الصورة الأم</h1>
-  <p>ارفع صورة مطابقة تمامًا للصورة الأم لمعرفة نسبة التطابق بدقة.</p>
+  <h1>🔍 تشخيص المفتاح البصري الكامل</h1>
+  <p>ارفع صورة مطابقة تمامًا للصورة الأم لمعرفة سبب الفشل إن وجد.</p>
   <input type="file" accept="image/*" onchange="handleUpload(event)">
   <div id="result"></div>
 
@@ -73,11 +73,22 @@
         masterImg.src = "../assets/keynova-master.png?v=" + Date.now();
 
         masterImg.onload = () => {
+          const result = {
+            matchRatio: 0,
+            differences: [],
+            keyWidth: keyImgElement.width,
+            keyHeight: keyImgElement.height,
+            masterWidth: masterImg.width,
+            masterHeight: masterImg.height,
+            comparedFrom: "x=0, y=0"
+          };
+
           if (
             keyImgElement.width !== masterImg.width ||
             keyImgElement.height !== masterImg.height
           ) {
-            resolve({ matchRatio: 0, differences: ["❌ اختلاف في الأبعاد"] });
+            result.differences.push("❌ اختلاف في الأبعاد بين المفتاح والصورة الأم");
+            resolve(result);
             return;
           }
 
@@ -97,25 +108,21 @@
           const keyData = ctxKey.getImageData(0, 0, keyImgElement.width, keyImgElement.height).data;
 
           let matchCount = 0;
-          let differences = [];
-
           for (let i = 0; i < keyData.length; i++) {
             const diff = Math.abs(keyData[i] - masterData[i]);
-
-            // مرونة في المقارنة: السماح بفروقات تصل إلى ±50 أو تطابقات شائعة
             if (
               diff <= 50 ||
               (keyData[i] === 0 && masterData[i] === 255) ||
               (keyData[i] === 255 && masterData[i] === 0)
             ) {
               matchCount++;
-            } else if (differences.length < 10) {
-              differences.push(`Pixel ${i}: key=${keyData[i]}, master=${masterData[i]}, diff=${diff}`);
+            } else if (result.differences.length < 10) {
+              result.differences.push(`Pixel ${i}: key=${keyData[i]}, master=${masterData[i]}, diff=${diff}`);
             }
           }
 
-          const matchRatio = matchCount / keyData.length;
-          resolve({ matchRatio, differences });
+          result.matchRatio = matchCount / keyData.length;
+          resolve(result);
         };
       });
     }
@@ -127,19 +134,26 @@
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = async () => {
-        const { matchRatio, differences } = await verifyKeyWithMaster(img);
+        const result = await verifyKeyWithMaster(img);
         const resultBox = document.getElementById('result');
 
-        if (matchRatio >= 0.95) {
+        const summary = `
+          📐 أبعاد المفتاح: ${result.keyWidth}×${result.keyHeight}<br>
+          📐 أبعاد الصورة الأم: ${result.masterWidth}×${result.masterHeight}<br>
+          🧭 المقارنة من: ${result.comparedFrom}<br>
+          📊 نسبة التطابق: ${(result.matchRatio * 100).toFixed(2)}%<br>
+          🔍 عدد البيكسلات المتطابقة: ${Math.round(result.matchRatio * result.keyWidth * result.keyHeight * 4)}<br>
+        `;
+
+        if (result.matchRatio >= 0.95) {
           resultBox.className = 'success';
-          resultBox.innerHTML = `✅ نسبة التطابق: ${(matchRatio * 100).toFixed(2)}%<br>
-            <a href="../assets/key4.pdf" target="_blank" class="btn">فتح الملف الرابع</a>`;
+          resultBox.innerHTML = summary +
+            '<a href="../assets/key4.pdf" target="_blank" class="btn">فتح الملف الرابع</a>';
         } else {
           resultBox.className = 'error';
-          resultBox.innerHTML = `❌ نسبة التطابق: ${(matchRatio * 100).toFixed(2)}%<br>
-            عدد البيكسلات المتطابقة: ${Math.round(matchRatio * img.width * img.height * 4)}<br>
-            <br>📌 أول 10 اختلافات:<br><ul>` +
-            differences.map(d => `<li>${d}</li>`).join('') + `</ul>`;
+          resultBox.innerHTML = summary +
+            '<br>📌 أول 10 اختلافات:<br><ul>' +
+            result.differences.map(d => `<li>${d}</li>`).join('') + '</ul>';
         }
       };
     }
