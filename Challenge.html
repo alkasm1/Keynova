@@ -46,7 +46,7 @@
       background: #ff8000;
     }
 
-    #result {
+    #result, #passwordResult {
       margin-top: 25px;
       font-size: 1rem;
       padding: 10px;
@@ -69,14 +69,32 @@
 <body>
 
   <h1>🔐 Keynova — التحدي الموحد</h1>
-  <p>ارفع مفتاحك البصري لفتح الملف المناسب.</p>
+  <p>ارفع مفتاحك البصري أو أدخل كلمة المرور لفتح الملف المناسب.</p>
+
+  <!-- نافذة رفع صورة المفتاح -->
   <input type="file" accept="image/*" onchange="handleKeynova(event)">
   <div id="result"></div>
+
+  <!-- نافذة إدخال كلمة مرور للمفتاح الثاني -->
+  <div class="key">
+    <p>🧩 المفتاح الثاني يتطلب إدخال كلمة مرور.</p>
+    <input type="password" id="passwordInput" placeholder="أدخل كلمة المرور" />
+    <button class="btn" onclick="checkPassword()">تحقق من المفتاح</button>
+    <div id="passwordResult" class="keyResult"></div>
+  </div>
+
+  <!-- عبارة احترافية توضح فلسفة Keynova -->
+  <div style="margin-top: 30px; max-width: 600px; font-size: 0.95rem; color: #ccc; line-height: 1.6;">
+    🔍 <strong>Keynova</strong> لا تعتمد على كلمات مرور تقليدية أو رموز عشوائية...  
+    بل على مفاتيح هندسية بصرية لا يمكن تزويرها.<br>
+    كل مفتاح هو تمثيل بصري فريد، وكل تحقق هو تجربة تصميمية ذكية.
+  </div>
 
   <script>
     const key1Name = "unlock.part01.png";
     const key3Hash = "b7a295f72c7de817b37d9f27700527f7688eec720001cf2750b5b072ce656775";
     const key4Hash = "2cb6792233fe38d66196100874c837fb6beb022d7bd749cb50bd4363f01b0d47";
+    const correctPassword = "your-secret-key"; // ← ضع هنا كلمة مرور المفتاح الثاني
 
     async function getImageHash(file) {
       return new Promise((resolve) => {
@@ -117,6 +135,21 @@
       } else {
         resultBox.className = "error";
         resultBox.innerHTML = `🚫 المفتاح غير صالح.<br>
+          <a href="assets/key5.pdf" target="_blank" class="btn">طلب مفاتيح Keynova</a>`;
+      }
+    }
+
+    function checkPassword() {
+      const input = document.getElementById("passwordInput").value.trim();
+      const resultBox = document.getElementById("passwordResult");
+
+      if (input === correctPassword) {
+        resultBox.className = "success";
+        resultBox.innerHTML = `✅ كلمة المرور صحيحة.<br>
+          <a href="assets/key2.pdf" target="_blank" class="btn">فتح الملف الثاني</a>`;
+      } else {
+        resultBox.className = "error";
+        resultBox.innerHTML = `🚫 كلمة المرور غير صحيحة.<br>
           <a href="assets/key5.pdf" target="_blank" class="btn">طلب مفاتيح Keynova</a>`;
       }
     }
