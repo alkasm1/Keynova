@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>Keynova — اختبار التطابق الكامل</title>
+  <title>Keynova — تشخيص المفتاح الكامل</title>
   <style>
     body {
       background: #0f0f0f;
@@ -28,9 +28,11 @@
 
     #result {
       margin-top: 25px;
-      font-size: 1.1rem;
+      font-size: 1rem;
       padding: 10px;
       border-radius: 8px;
+      max-width: 600px;
+      text-align: left;
     }
 
     .success {
@@ -59,8 +61,8 @@
   </style>
 </head>
 <body>
-  <h1>🔐 اختبار التطابق الكامل مع الصورة الأم</h1>
-  <p>ارفع صورة مطابقة تمامًا للصورة الأم للتحقق من نجاح النموذج.</p>
+  <h1>🔍 تشخيص المفتاح البصري الكامل</h1>
+  <p>ارفع صورة مطابقة تمامًا للصورة الأم لمعرفة سبب الفشل إن وجد.</p>
   <input type="file" accept="image/*" onchange="handleUpload(event)">
   <div id="result"></div>
 
@@ -68,46 +70,46 @@
     async function verifyKeyWithMaster(keyImgElement) {
       return new Promise((resolve) => {
         const masterImg = new Image();
-        masterImg.src = "../assets/keynova-master.png?v=" + Date.now(); // تجاوز التخزين المؤقت
+        masterImg.src = "../assets/keynova-master.png?v=" + Date.now();
 
         masterImg.onload = () => {
-          // التحقق من تطابق الأبعاد أولاً
           if (
             keyImgElement.width !== masterImg.width ||
             keyImgElement.height !== masterImg.height
           ) {
-            resolve(0); // لا تطابق
+            resolve({ matchRatio: 0, differences: ["❌ اختلاف في الأبعاد"] });
             return;
           }
 
-          // Canvas للصورة الأم
           const canvasMaster = document.createElement("canvas");
           const ctxMaster = canvasMaster.getContext("2d");
           canvasMaster.width = masterImg.width;
           canvasMaster.height = masterImg.height;
           ctxMaster.drawImage(masterImg, 0, 0);
 
-          // Canvas للمفتاح
           const canvasKey = document.createElement("canvas");
           const ctxKey = canvasKey.getContext("2d");
           canvasKey.width = keyImgElement.width;
           canvasKey.height = keyImgElement.height;
           ctxKey.drawImage(keyImgElement, 0, 0);
 
-          // استخراج البيانات
           const masterData = ctxMaster.getImageData(0, 0, masterImg.width, masterImg.height).data;
           const keyData = ctxKey.getImageData(0, 0, keyImgElement.width, keyImgElement.height).data;
 
-          // مقارنة البيكسلات
           let matchCount = 0;
+          let differences = [];
+
           for (let i = 0; i < keyData.length; i++) {
-            if (Math.abs(keyData[i] - masterData[i]) <= 30) {
+            const diff = Math.abs(keyData[i] - masterData[i]);
+            if (diff <= 30) {
               matchCount++;
+            } else if (differences.length < 10) {
+              differences.push(`Pixel ${i}: key=${keyData[i]}, master=${masterData[i]}, diff=${diff}`);
             }
           }
 
           const matchRatio = matchCount / keyData.length;
-          resolve(matchRatio);
+          resolve({ matchRatio, differences });
         };
       });
     }
@@ -119,7 +121,7 @@
       const img = new Image();
       img.src = URL.createObjectURL(file);
       img.onload = async () => {
-        const matchRatio = await verifyKeyWithMaster(img);
+        const { matchRatio, differences } = await verifyKeyWithMaster(img);
         const resultBox = document.getElementById('result');
 
         if (matchRatio >= 0.95) {
@@ -129,7 +131,9 @@
         } else {
           resultBox.className = 'error';
           resultBox.innerHTML = `❌ نسبة التطابق: ${(matchRatio * 100).toFixed(2)}%<br>
-            الصورة غير مطابقة تمامًا.`;
+            عدد البيكسلات المتطابقة: ${Math.round(matchRatio * img.width * img.height * 4)}<br>
+            <br>📌 أول 10 اختلافات:<br><ul>` +
+            differences.map(d => `<li>${d}</li>`).join('') + `</ul>`;
         }
       };
     }
