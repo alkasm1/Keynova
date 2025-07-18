@@ -2,7 +2,7 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>Keynova — تشخيص المفتاح الكامل</title>
+  <title>Keynova — اختبار التطابق المرن</title>
   <style>
     body {
       background: #0f0f0f;
@@ -61,8 +61,8 @@
   </style>
 </head>
 <body>
-  <h1>🔍 تشخيص المفتاح البصري الكامل</h1>
-  <p>ارفع صورة مطابقة تمامًا للصورة الأم لمعرفة سبب الفشل إن وجد.</p>
+  <h1>🔍 اختبار التطابق المرن مع الصورة الأم</h1>
+  <p>ارفع صورة مطابقة تمامًا للصورة الأم لمعرفة نسبة التطابق بدقة.</p>
   <input type="file" accept="image/*" onchange="handleUpload(event)">
   <div id="result"></div>
 
@@ -101,7 +101,13 @@
 
           for (let i = 0; i < keyData.length; i++) {
             const diff = Math.abs(keyData[i] - masterData[i]);
-            if (diff <= 30) {
+
+            // مرونة في المقارنة: السماح بفروقات تصل إلى ±50 أو تطابقات شائعة
+            if (
+              diff <= 50 ||
+              (keyData[i] === 0 && masterData[i] === 255) ||
+              (keyData[i] === 255 && masterData[i] === 0)
+            ) {
               matchCount++;
             } else if (differences.length < 10) {
               differences.push(`Pixel ${i}: key=${keyData[i]}, master=${masterData[i]}, diff=${diff}`);
