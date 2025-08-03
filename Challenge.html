@@ -93,6 +93,7 @@
     const key1Name = "unlock.part01.png";
     const key3Hash = "b7a295f72c7de817b37d9f27700527f7688eec720001cf2750b5b072ce656775";
     const key4Hash = "2cb6792233fe38d66196100874c837fb6beb022d7bd749cb50bd4363f01b0d47";
+    const key4Name = "unlock.part04.png";
     const correctPassword = "nova2";
 
     async function getImageHash(file) {
@@ -127,9 +128,9 @@
         resultBox.className = "success";
         resultBox.innerHTML = `✅ المفتاح الثالث صالح.<br>
           <a href="assets/key3.pdf" target="_blank" class="btn">فتح الملف الثالث</a>`;
-      } else if (hash === key4Hash) {
+      } else if (hash === key4Hash && fileName === key4Name) {
         resultBox.className = "success";
-        resultBox.innerHTML = `✅ المفتاح الرابع صالح.<br>
+        resultBox.innerHTML = `✅ المفتاح الرابع صالح (مطابقة مزدوجة).<br>
           <a href="assets/key4.pdf" target="_blank" class="btn">فتح الملف الرابع</a>`;
       } else {
         resultBox.className = "error";
